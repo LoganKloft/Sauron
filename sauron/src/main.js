@@ -14,6 +14,7 @@ const createWindow = () => {
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
+    icon: './assets/icons/icons8-ring-512.png'
   });
 
   // and load the index.html of the app.
