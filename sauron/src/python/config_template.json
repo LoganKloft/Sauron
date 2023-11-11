@@ -1,0 +1,12 @@
+{
+    "yolo": {
+        "conf": 0.7,
+        "stream": true,
+        "save": true,
+        "weights": "yolov8n.pt",
+        "vid_stride": 10,
+        "project": "../data/video",
+        "name": "cars",
+        "source": "../video/cars.mp4"
+    }
+}

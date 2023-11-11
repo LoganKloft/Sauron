@@ -36,19 +36,19 @@ def display_image(image):
     plt.show()
 
 
-# def download_and_resize_image(url, new_width=256, new_height=256, display=False):
-#     _, filename = tempfile.mkstemp(suffix=".jpg")
-#     response = urlopen(url)
-#     image_data = response.read()
-#     image_data = BytesIO(image_data)
-#     pil_image = Image.open(image_data)
-#     pil_image = ImageOps.fit(pil_image, (new_width, new_height), Image.LANCZOS)
-#     pil_image_rgb = pil_image.convert("RGB")
-#     pil_image_rgb.save(filename, format="JPEG", quality=90)
-#     print("Image downloaded to %s." % filename)
-#     if display:
-#         display_image(pil_image)
-#     return filename
+def download_and_resize_image(url, new_width=256, new_height=256, display=False):
+    _, filename = tempfile.mkstemp(suffix=".jpg")
+    response = urlopen(url)
+    image_data = response.read()
+    image_data = BytesIO(image_data)
+    pil_image = Image.open(image_data)
+    pil_image = ImageOps.fit(pil_image, (new_width, new_height), Image.LANCZOS)
+    pil_image_rgb = pil_image.convert("RGB")
+    pil_image_rgb.save(filename, format="JPEG", quality=90)
+    print("Image downloaded to %s." % filename)
+    if display:
+        display_image(pil_image)
+    return filename
 
 
 def draw_bounding_box_on_image(
@@ -169,4 +169,9 @@ def run_detector(detector, path):
     display_image(image_with_boxes)
 
 
-run_detector(detector, "../image/elephant.jpg")
+# By Heiko Gorski, Source: https://commons.wikimedia.org/wiki/File:Naxos_Taverna.jpg
+image_url = "https://upload.wikimedia.org/wikipedia/commons/6/60/Naxos_Taverna.jpg"
+downloaded_image_path = download_and_resize_image(image_url, 1280, 856)
+
+# run_detector(detector, "../image/elephant.jpg")
+run_detector(detector, downloaded_image_path)
