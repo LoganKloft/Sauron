@@ -1,10 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
-import { saveTask } from './tasks';
-
-function getFileName(fPath) {
-
-}
+import { saveTask, init as initTasks } from './tasks.js';
+import { init as initMeta } from './meta.js';
 
 async function handleFileOpen() {
   const { canceled, filePaths } = await dialog.showOpenDialog()
@@ -41,6 +38,14 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
+  // create query directory in data if not already there
+  // create meta.json in query directory if not already there
+  initMeta();
+
+  // create task directory in data if not already there
+  // create tasks.json in task directory if not already there
+  initTasks();
+
   createWindow();
   ipcMain.handle('dialog:openFile', handleFileOpen);
   ipcMain.handle('saveTask', saveTask);
