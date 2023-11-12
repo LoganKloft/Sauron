@@ -60,15 +60,6 @@ function Upload() {
         task["status"] = "unprocessed";
         task["model_params"] = modelParametersRef.current;
 
-        // const tasks = JSON.parse(
-        //     await readFile("../../data/task/tasks.json"));
-
-        // const index = tasks["count"];
-        // tasks["count"] = tasks["count"] + 1;
-        // tasks[index] = task;
-
-        // await writeFile("../../data/task/tasks.json", JSON.stringify(tasks));
-
         await window.electronAPI.saveTask(task);
 
         navigate('/');

@@ -12,6 +12,11 @@ export async function saveTask(event, task) {
     await writeFile("./src/data/task/tasks.json", JSON.stringify(tasks));
 }
 
+export async function getTasks() {
+    const tasks = JSON.parse(await readFile("./src/data/task/tasks.json"));
+    return tasks;
+}
+
 export function init() {
     // check if ./src/data/task exists
     // if not create it

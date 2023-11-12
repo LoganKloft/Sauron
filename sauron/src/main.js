@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
-import { saveTask, init as initTasks } from './tasks.js';
+import { saveTask, getTasks, init as initTasks } from './tasks.js';
 import { init as initMeta } from './meta.js';
 
 async function handleFileOpen() {
@@ -49,6 +49,7 @@ app.on('ready', () => {
   createWindow();
   ipcMain.handle('dialog:openFile', handleFileOpen);
   ipcMain.handle('saveTask', saveTask);
+  ipcMain.handle('getTasks', getTasks)
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
