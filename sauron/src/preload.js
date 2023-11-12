@@ -5,5 +5,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
     saveTask: (task) => ipcRenderer.invoke('saveTask', task),
     openFile: () => ipcRenderer.invoke('dialog:openFile'),
-    getTasks: () => ipcRenderer.invoke('getTasks')
+    getTasks: () => ipcRenderer.invoke('getTasks'),
+    processTask: (task) => ipcRenderer.invoke('processTask', task),
+    handleProgress: (callback) => ipcRenderer.on('handleProgress', callback)
 })

@@ -49,7 +49,12 @@ function Upload() {
 
     async function handleCreateTask() {
         const models = []
-        if (showYoloParams) models.push("yolo");
+        if (showYoloParams) {
+            models.push("yolo");
+
+            // divide confidence by 100
+            modelParametersRef.current["yolo"]["conf"] = modelParametersRef.current["yolo"]["conf"] / 100;
+        }
 
         const task = {}
 

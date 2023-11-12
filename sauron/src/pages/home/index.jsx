@@ -41,6 +41,7 @@ function Home() {
     return (
         <div>
             <Button variant="contained" onClick={() => navigate('upload')}>Upload</Button>
+            <Button variant="contained" onClick={() => navigate('query')}>Query</Button>
             {tasks &&
                 tasks.map((task) => {
                     return <Task key={task["key"]} task={task} />

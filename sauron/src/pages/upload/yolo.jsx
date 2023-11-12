@@ -19,24 +19,13 @@ function Yolo({ modelParametersRef }) {
     const DefaultSave = true;
     const DefaultWeight = "YOLOv8n";
     const DefaultStride = 10;
-    const DefaultProject = "../data/video";
+    const DefaultProject = "./src/data/video";
 
     const [confidence, setConfidence] = useState(DefaultConfidence);
     const [stream, setStream] = useState(DefaultStream);
     const [save, setSave] = useState(DefaultSave);
     const [weight, setWeight] = useState(DefaultWeight);
     const [stride, setStride] = useState(DefaultStride);
-
-    // yolo = {
-    //     "conf": params["conf"],
-    //     "stream": params["stream"],
-    //     "save": params["save"],
-    //     "weights": params["weight"],
-    //     "vid_stride": params["stride"],
-    //     "name": name,
-    //     "project": params["project"],
-    //     "source": sourceFileLocation
-    // }
 
     useEffect(() => {
         modelParametersRef.current["yolo"]["conf"] = DefaultConfidence;

@@ -1,10 +1,15 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
-import { saveTask, getTasks, init as initTasks } from './tasks.js';
+import { saveTask, getTasks, processTask, init as initTasks } from './tasks.js';
 import { init as initMeta } from './meta.js';
 
+let _mainWindow = null;
+
 async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog()
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    "filters": [{ "name": "Movies", "extensions": ["mkv", "avi", "mp4"] }]
+  })
+
   if (!canceled) {
     return { fpath: filePaths[0], fname: path.basename(filePaths[0]) }
   }
@@ -32,7 +37,13 @@ const createWindow = () => {
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
+
+  _mainWindow = mainWindow;
 };
+
+export function handleProgress(value) {
+  _mainWindow.webContents.send("handleProgress", value);
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -49,7 +60,8 @@ app.on('ready', () => {
   createWindow();
   ipcMain.handle('dialog:openFile', handleFileOpen);
   ipcMain.handle('saveTask', saveTask);
-  ipcMain.handle('getTasks', getTasks)
+  ipcMain.handle('getTasks', getTasks);
+  ipcMain.handle('processTask', processTask);
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

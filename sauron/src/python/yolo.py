@@ -1,11 +1,26 @@
 from ultralytics import YOLO
+import cv2
 import json
+import sys
 
-f = open("./config.json")
+# paths start in the sauron folder
+f = open("./src/python/config.json")
 config = json.load(f)["yolo"]
 f.close()
+model = YOLO(config["weights"].lower())
 
-model = YOLO(config["weights"])
+# get frame count
+video = cv2.VideoCapture(config["source"])
+total_frames = video.get(cv2.CAP_PROP_FRAME_COUNT)
+video.release()
+
+
+def on_predict_batch_end(predictor):
+    one, two, three, four = predictor.batch
+    print("START THREE", two, "END THREE")
+
+
+# model.add_callback("on_predict_batch_end", on_predict_batch_end)
 
 results = model(
     source=config["source"],
@@ -65,7 +80,9 @@ for result in results:
 
         confidences[index].append(box.conf.item())
 
+    print(int((frame / total_frames) * 100))
+    sys.stdout.flush()
     frame += config["vid_stride"]
 
-with open("../data/query/cars_results.json", "w") as fp:
+with open("./src/data/query/cars_results.json", "w") as fp:
     json.dump(output, fp)
