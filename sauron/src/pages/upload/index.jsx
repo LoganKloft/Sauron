@@ -10,8 +10,6 @@ import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import Yolo from './yolo.jsx';
 
-import { readFile, writeFile } from 'fs/promises';
-
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -35,11 +33,12 @@ function Upload() {
 
     const modelParametersRef = useRef({ "yolo": {} });
 
-    function handleFileUpload(event) {
-        if (event.target.files.length !== 0) {
-            modelParametersRef.current["yolo"]["source"] = event.target.files[0].path
-            setSourceFileLocation(event.target.files[0].path);
-            setSourceFileName(event.target.files[0].name);
+    async function handleFileUpload() {
+        const { fpath, fname } = await window.electronAPI.openFile();
+        if (fpath && fname) {
+            modelParametersRef.current["yolo"]["source"] = fpath
+            setSourceFileLocation(fpath);
+            setSourceFileName(fname);
         }
     }
 
@@ -61,23 +60,24 @@ function Upload() {
         task["status"] = "unprocessed";
         task["model_params"] = modelParametersRef.current;
 
-        const tasks = JSON.parse(
-            await readFile("../../data/task/tasks.json"));
+        // const tasks = JSON.parse(
+        //     await readFile("../../data/task/tasks.json"));
 
-        const index = tasks["count"];
-        tasks["count"] = tasks["count"] + 1;
-        tasks[index] = task;
+        // const index = tasks["count"];
+        // tasks["count"] = tasks["count"] + 1;
+        // tasks[index] = task;
 
-        await writeFile("../../data/task/tasks.json", JSON.stringify(tasks));
+        // await writeFile("../../data/task/tasks.json", JSON.stringify(tasks));
+
+        await window.electronAPI.saveTask(task);
 
         navigate('/');
     }
 
     return (
         <div>
-            <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+            <Button component="label" variant="contained" startIcon={<CloudUploadIcon />} onClick={() => handleFileUpload()}>
                 Upload Video
-                <VisuallyHiddenInput type="file" onChange={(e) => handleFileUpload(e)} />
             </Button>
             <TextField id="task-name" label="Task name" variant="standard" onChange={(e) => handleNameChange(e)} />
             <Typography>Model Selection</Typography>

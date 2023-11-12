@@ -49,7 +49,7 @@ function Yolo({ modelParametersRef }) {
     }, [])
 
     function handleSliderChange(event, newValue) {
-        modelParametersRef.current["yolo"]["conf"] = newValue;
+        modelParametersRef.current["yolo"]["conf"] = newValue / 100;
         setConfidence(newValue);
     }
 

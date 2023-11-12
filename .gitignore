@@ -128,3 +128,16 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# SAURON SPECIFIC
+# eventually reset cache to enforce these:
+# git rm -r --cached .
+# git add .
+# anything in data/task should not be tracked
+# these include system files paths
+/sauron/src/data/task/*
+# anything in data/query should not be tracked
+# these include system file paths
+/sauron/src/data/query/*
+# don't include the config.json in /python
+/sauron/src/python/config.json
