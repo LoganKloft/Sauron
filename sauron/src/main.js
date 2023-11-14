@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 import { saveTask, getTasks, processTask, init as initTasks } from './tasks.js';
-import { init as initMeta } from './meta.js';
+import { getQueryMeta, getQueryData, init as initMeta } from './query.js';
 
 let _mainWindow = null;
 
@@ -50,7 +50,6 @@ export function handleProgress(value) {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   // create query directory in data if not already there
-  // create meta.json in query directory if not already there
   initMeta();
 
   // create task directory in data if not already there
@@ -62,6 +61,8 @@ app.on('ready', () => {
   ipcMain.handle('saveTask', saveTask);
   ipcMain.handle('getTasks', getTasks);
   ipcMain.handle('processTask', processTask);
+  ipcMain.handle('getQueryMeta', getQueryMeta);
+  ipcMain.handle('getQueryData', getQueryData);
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

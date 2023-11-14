@@ -33,7 +33,15 @@ export function init() {
     }
 }
 
-export async function processTask(event, task) {
+async function setTaskStatus(id, status) {
+    const tasks = JSON.parse(await readFile("./src/data/task/tasks.json"));
+
+    tasks[id]["status"] = status;
+
+    await writeFile("./src/data/task/tasks.json", JSON.stringify(tasks));
+}
+
+export async function processTask(event, task, id) {
     // write model parameters to ./src/python/config.json
     const config = {};
     config["yolo"] = task["model_params"]["yolo"];
@@ -58,4 +66,6 @@ export async function processTask(event, task) {
         console.log(`Python script exited with code ${code}`);
         handleProgress("stop");
     })
+
+    await setTaskStatus(id, "processed");
 }

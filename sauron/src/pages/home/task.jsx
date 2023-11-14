@@ -23,7 +23,7 @@ function Task({ task }) {
     const [showProgress, setShowProgress] = useState(false);
 
     function handleProcessTask() {
-        window.electronAPI.processTask(task);
+        window.electronAPI.processTask(task, task["key"]);
     }
 
     window.electronAPI.handleProgress((event, value) => {

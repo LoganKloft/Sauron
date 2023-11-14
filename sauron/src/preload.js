@@ -6,6 +6,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     saveTask: (task) => ipcRenderer.invoke('saveTask', task),
     openFile: () => ipcRenderer.invoke('dialog:openFile'),
     getTasks: () => ipcRenderer.invoke('getTasks'),
-    processTask: (task) => ipcRenderer.invoke('processTask', task),
-    handleProgress: (callback) => ipcRenderer.on('handleProgress', callback)
+    processTask: (task, id) => ipcRenderer.invoke('processTask', task, id),
+    handleProgress: (callback) => ipcRenderer.on('handleProgress', callback),
+    getQueryMeta: (labels, tasks) => ipcRenderer.invoke('getQueryMeta', labels, tasks),
+    getQueryData: (labels, task) => ipcRenderer.invoke('getQueryData', labels, task)
 })

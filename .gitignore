@@ -141,3 +141,4 @@ dist
 /sauron/src/data/query/*
 # don't include the config.json in /python
 /sauron/src/python/config.json
+/sauron/src/data/video/*

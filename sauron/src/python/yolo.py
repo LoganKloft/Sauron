@@ -9,9 +9,12 @@ config = json.load(f)["yolo"]
 f.close()
 model = YOLO(config["weights"].lower())
 
-# get frame count
+# get frame count and frame rate
+# using the frame rate and current frame we can
+# get the time stamp
 video = cv2.VideoCapture(config["source"])
 total_frames = video.get(cv2.CAP_PROP_FRAME_COUNT)
+frame_rate = video.get(cv2.CAP_PROP_FPS)
 video.release()
 
 
@@ -84,5 +87,6 @@ for result in results:
     sys.stdout.flush()
     frame += config["vid_stride"]
 
-with open("./src/data/query/cars_results.json", "w") as fp:
+task_name = config["name"]
+with open(f"./src/data/query/{task_name}_results.json", "w") as fp:
     json.dump(output, fp)
