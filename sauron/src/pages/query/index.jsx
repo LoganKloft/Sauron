@@ -138,7 +138,7 @@ function Query() {
             const result = await window.electronAPI.getQueryData(selectedLabels, task);
             setQueryData(result);
 
-            setSource(task["source_file_location"]);
+            setSource("http://localhost:7654/" + task["source_file_location"]);
         })();
     }
 

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, session } = require('electron');
 const path = require('path');
 import { saveTask, getTasks, processTask, init as initTasks } from './tasks.js';
 import { resolveURL, getQueryMeta, getQueryData, init as initMeta } from './query.js';
@@ -67,6 +67,15 @@ app.on('ready', () => {
   ipcMain.handle('getQueryMeta', getQueryMeta);
   ipcMain.handle('getQueryData', getQueryData);
   ipcMain.handle('resolveURL', resolveURL);
+
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': ['media-src http://localhost:7654/']
+      }
+    })
+  })
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
