@@ -28,7 +28,7 @@ export async function getQueryMeta(event, labels, tasks) {
 
         for (const label of labels) {
             if (label in results) {
-                meta[label] = Math.max(results[label]["counts"]);
+                meta[label] = Math.max(...results[label]["counts"]);
             }
             else {
                 meta[label] = 0
