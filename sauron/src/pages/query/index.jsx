@@ -12,6 +12,25 @@ import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import VideoJS from './video.jsx'
 
+const SECONDS_IN_HOUR = 60 * 60;
+const SECONDS_IN_MINUTE = 60;
+function formatSeconds(seconds) {
+    // hours - a whole number
+    let hours = Math.trunc(seconds / SECONDS_IN_HOUR);
+    hours = hours.toString();
+    seconds = seconds - (hours * SECONDS_IN_HOUR);
+
+    // minutes - a whole number
+    let minutes = Math.trunc(seconds / SECONDS_IN_MINUTE);
+    minutes = minutes.toString();
+
+    // seconds - most likely a decimal value
+    seconds = seconds - (minutes * SECONDS_IN_MINUTE);
+    seconds = seconds.toString();
+
+    return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
+}
+
 function Query() {
     const navigate = useNavigate();
     const [tasks, setTasks] = useState([])
@@ -146,8 +165,8 @@ function Query() {
     // then change getQueryData to return timestamps rather than frames
     // then change the mapping of queryDataItems to use timestamps
     // then change this function to take the timestamp as input and seek to that time
-    function handleSeek() {
-        playerRef.current.currentTime(10);
+    function handleSeek(timestamp) {
+        playerRef.current.currentTime(timestamp);
         playerRef.current.pause();
     }
 
@@ -227,14 +246,14 @@ function Query() {
                 queryData &&
                 queryData.map((queryDataItem) => {
                     for (const [label, data] of Object.entries(queryDataItem)) {
-                        const frames = data["frames"]
+                        const timestamps = data["timestamps"]
                         const counts = data["counts"]
                         return (
                             <div key={label}>
                                 <Typography>{label}</Typography>
                                 {
-                                    frames.map((frame, index) => {
-                                        return (<Button onClick={() => handleSeek()} key={label + frame}>{frame} {counts[index]}</Button>)
+                                    timestamps.map((timestamp, index) => {
+                                        return (<Button onClick={() => handleSeek(timestamp)} key={label + timestamp}>timestamp: {formatSeconds(timestamp)} count: {counts[index]}</Button>)
                                     })
                                 }
                             </div>

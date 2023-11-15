@@ -44,7 +44,10 @@ function Task({ task }) {
             <Typography>{task["source_file_name"]}</Typography>
             <Typography>{task["source_file_location"]}</Typography>
             <Typography>{task["models"]}</Typography>
-            <Button onClick={() => handleProcessTask()}>Process</Button>
+            {
+                task["status"] === "unprocessed" &&
+                <Button onClick={() => handleProcessTask()}>Process</Button>
+            }
             {
                 showProgress &&
                 <LinearProgressWithLabel value={progress} />

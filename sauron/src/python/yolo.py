@@ -17,14 +17,6 @@ total_frames = video.get(cv2.CAP_PROP_FRAME_COUNT)
 frame_rate = video.get(cv2.CAP_PROP_FPS)
 video.release()
 
-
-def on_predict_batch_end(predictor):
-    one, two, three, four = predictor.batch
-    print("START THREE", two, "END THREE")
-
-
-# model.add_callback("on_predict_batch_end", on_predict_batch_end)
-
 results = model(
     source=config["source"],
     conf=config["conf"],
@@ -35,7 +27,8 @@ results = model(
     project=config["project"],
 )
 
-frame = config["vid_stride"]
+current_frame = 0
+stride = config["vid_stride"]
 output = dict()
 for result in results:
     bxes = result.boxes
@@ -50,15 +43,16 @@ for result in results:
             entry["counts"] = []
             entry["boxes"] = []
             entry["confidences"] = []
+            entry["timestamps"] = []
 
         entry = output[name]
         frames = entry["frames"]
         index = 0
-        if frame not in frames:
+        if current_frame not in frames:
             index = len(frames)
-            frames.append(frame)
+            frames.append(current_frame)
         else:
-            index = frames.index(frame)
+            index = frames.index(current_frame)
 
         counts = entry["counts"]
         if index == len(counts):
@@ -83,9 +77,13 @@ for result in results:
 
         confidences[index].append(box.conf.item())
 
-    print(int((frame / total_frames) * 100))
+        timestamps = entry["timestamps"]
+        if index == len(timestamps):
+            timestamps.append(current_frame / frame_rate)
+
+    print(int((current_frame / total_frames) * 100))
     sys.stdout.flush()
-    frame += config["vid_stride"]
+    current_frame += stride
 
 task_name = config["name"]
 with open(f"./src/data/query/{task_name}_results.json", "w") as fp:
