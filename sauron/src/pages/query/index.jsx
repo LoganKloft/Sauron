@@ -10,7 +10,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import VideoJS from './video.jsx'
 
 function Query() {
@@ -26,7 +25,7 @@ function Query() {
     const playerRef = useRef(null);
 
     const videoJsOptions = {
-        autoplay: true,
+        autoplay: false,
         controls: true,
         responsive: true,
         fluid: true,
@@ -142,6 +141,16 @@ function Query() {
         })();
     }
 
+    // TODO: feed in time stamp
+    // HOW: in yolo.py use total_frames and frame to calculate timestamp
+    // then change getQueryData to return timestamps rather than frames
+    // then change the mapping of queryDataItems to use timestamps
+    // then change this function to take the timestamp as input and seek to that time
+    function handleSeek() {
+        playerRef.current.currentTime(10);
+        playerRef.current.pause();
+    }
+
     return (
         <div>
             <Button variant="contained" onClick={() => navigate('/')}>Home</Button>
@@ -225,7 +234,7 @@ function Query() {
                                 <Typography>{label}</Typography>
                                 {
                                     frames.map((frame, index) => {
-                                        return (<Link href="#" key={label + frame}>{frame} {counts[index]}</Link>)
+                                        return (<Button onClick={() => handleSeek()} key={label + frame}>{frame} {counts[index]}</Button>)
                                     })
                                 }
                             </div>
