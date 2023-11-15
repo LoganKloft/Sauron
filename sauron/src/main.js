@@ -1,7 +1,8 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 import { saveTask, getTasks, processTask, init as initTasks } from './tasks.js';
-import { getQueryMeta, getQueryData, init as initMeta } from './query.js';
+import { resolveURL, getQueryMeta, getQueryData, init as initMeta } from './query.js';
+import { startExpressServer, stopExpressServer } from './express.js';
 
 let _mainWindow = null;
 
@@ -22,6 +23,8 @@ if (require('electron-squirrel-startup')) {
 }
 
 const createWindow = () => {
+  startExpressServer();
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -63,6 +66,7 @@ app.on('ready', () => {
   ipcMain.handle('processTask', processTask);
   ipcMain.handle('getQueryMeta', getQueryMeta);
   ipcMain.handle('getQueryData', getQueryData);
+  ipcMain.handle('resolveURL', resolveURL);
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -72,6 +76,8 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+
+  stopExpressServer();
 });
 
 app.on('activate', () => {

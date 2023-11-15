@@ -9,5 +9,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     processTask: (task, id) => ipcRenderer.invoke('processTask', task, id),
     handleProgress: (callback) => ipcRenderer.on('handleProgress', callback),
     getQueryMeta: (labels, tasks) => ipcRenderer.invoke('getQueryMeta', labels, tasks),
-    getQueryData: (labels, task) => ipcRenderer.invoke('getQueryData', labels, task)
+    getQueryData: (labels, task) => ipcRenderer.invoke('getQueryData', labels, task),
+    resolveURL: (url) => ipcRenderer.invoke('resolveURL', url)
 })

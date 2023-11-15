@@ -1,5 +1,6 @@
 const { existsSync, mkdirSync } = require('fs');
 const { readFile } = require('fs/promises');
+const path = require('node:path');
 
 export function init() {
     // check if ./src/data/query exists
@@ -58,4 +59,10 @@ export async function getQueryData(event, labels, task) {
     }
 
     return queryData;
+}
+
+// url should start insid of the 'sauron' directory
+// see how paths are defined in the other functions in this file
+export async function resolveURL(event, url) {
+    return path.resolve(url);
 }
