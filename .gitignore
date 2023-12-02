@@ -142,3 +142,4 @@ dist
 # don't include the config.json in /python
 /sauron/src/python/config.json
 /sauron/src/data/video/*
+/sauron/src/python/frozen_faster_rcnn.pb
