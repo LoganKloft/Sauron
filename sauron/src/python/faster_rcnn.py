@@ -86,7 +86,7 @@ class_labels = [
 ]
 
 # f = open("./src/python/config.json")
-f = open("./config.json")
+f = open("./src/python/config.json")
 config = json.load(f)["faster_rcnn"]
 f.close()
 
@@ -94,7 +94,9 @@ video = cv2.VideoCapture(config["source"])
 total_frames = video.get(cv2.CAP_PROP_FRAME_COUNT)
 frame_rate = video.get(cv2.CAP_PROP_FPS)
 
-net = cv2.dnn_DetectionModel("frozen_faster_rcnn.pb", "faster_rcnn.pbtxt")
+net = cv2.dnn_DetectionModel(
+    "./src/python/frozen_faster_rcnn.pb", "./src/python/faster_rcnn.pbtxt"
+)
 net.setInputSize(600, 600)
 net.setInputSwapRB(True)
 net.setInputCrop(False)
@@ -174,7 +176,8 @@ while current_frame < total_frames:
             if index == len(timestamps):
                 timestamps.append(current_frame / frame_rate)
 
-    print(f"{(current_frame / total_frames) * 100}%")
+    print(int((current_frame / total_frames) * 100))
+    sys.stdout.flush()
     # cv2.imshow("out", frame)
     # cv2.waitKey(1)
     current_frame += stride

@@ -98,7 +98,7 @@ class_labels = [
 ]
 
 # f = open("./src/python/config.json")
-f = open("./config.json")
+f = open("./src/python/config.json")
 config = json.load(f)["mobilenetssd"]
 f.close()
 
@@ -106,7 +106,9 @@ video = cv2.VideoCapture(config["source"])
 total_frames = video.get(cv2.CAP_PROP_FRAME_COUNT)
 frame_rate = video.get(cv2.CAP_PROP_FPS)
 
-net = cv2.dnn_DetectionModel("frozen_mobilenetssd.pb", "mobilenetssd.pbtxt")
+net = cv2.dnn_DetectionModel(
+    "./src/python/frozen_mobilenetssd.pb", "./src/python/mobilenetssd.pbtxt"
+)
 net.setInputSize(300, 300)
 net.setInputSwapRB(True)
 net.setInputCrop(False)
@@ -128,7 +130,7 @@ while current_frame < total_frames:
             _classes.flatten(), _confidences.flatten(), _boxes
         ):
             # print(class_labels[classId], confidence)
-            cv2.rectangle(frame, box, color=(255, 0, 0), thickness=3)
+            # cv2.rectangle(frame, box, color=(255, 0, 0), thickness=3)
             # cv2.rectangle(
             #     frame,
             #     (box[0], box[1]),
@@ -186,9 +188,10 @@ while current_frame < total_frames:
             if index == len(timestamps):
                 timestamps.append(current_frame / frame_rate)
 
-    print(f"{(current_frame / total_frames) * 100}%")
-    cv2.imshow("out", frame)
-    cv2.waitKey(1)
+    print(int((current_frame / total_frames) * 100))
+    sys.stdout.flush()
+    # cv2.imshow("out", frame)
+    # cv2.waitKey(1)
     current_frame += stride
 
 video.release()

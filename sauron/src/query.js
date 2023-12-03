@@ -1,5 +1,6 @@
 const { existsSync, mkdirSync } = require('fs');
 const { readFile } = require('fs/promises');
+const { getModelParams } = require('./tasks.js');
 const path = require('node:path');
 
 export function init() {
@@ -20,7 +21,7 @@ export function init() {
 export async function getQueryMeta(event, labels, tasks) {
     let metaList = []
     for (const task of tasks) {
-        const name = task["model_params"]["yolo"]["name"];
+        const name = getModelParams(task)["name"];
         const results = JSON.parse(await readFile(`./src/data/query/${name}_results.json`));
 
         let meta = {}
@@ -47,7 +48,7 @@ export async function getQueryMeta(event, labels, tasks) {
 export async function getQueryData(event, labels, task) {
     const queryData = []
 
-    const name = task["model_params"]["yolo"]["name"];
+    const name = getModelParams(task)["name"];
     const result = JSON.parse(await readFile(`./src/data/query/${name}_results.json`));
 
     for (const label of labels) {
