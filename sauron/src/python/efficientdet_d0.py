@@ -117,7 +117,7 @@ while current_frame < total_frames:
             _classes.flatten(), _confidences.flatten(), _boxes
         ):
             # print(class_labels[classId], confidence)
-            # cv.rectangle(frame, box, color=(255, 0, 0), thickness=3)
+            # cv2.rectangle(frame, box, color=(255, 0, 0), thickness=3)
             # cv2.rectangle(
             #     frame,
             #     (box[0], box[1]),
@@ -182,6 +182,5 @@ while current_frame < total_frames:
 
 video.release()
 task_name = config["name"]
-# with open(f"./src/data/query/{task_name}_results.json", "w") as fp:
-with open(f"./{task_name}_results.json", "w") as fp:
+with open(f"./src/data/query/{task_name}_results.json", "w") as fp:
     json.dump(output, fp)

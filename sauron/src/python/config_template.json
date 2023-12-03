@@ -14,5 +14,17 @@
         "vid_stride": 10,
         "source": "../video/cars.mp4",
         "name": "effi_test"
+    },
+    "faster_rcnn": {
+        "conf": 0.7,
+        "vid_stride": 10,
+        "source": "../video/cars.mp4",
+        "name": "effi_test"
+    },
+    "mobilenetssd": {
+        "conf": 0.7,
+        "vid_stride": 10,
+        "source": "../video/cars.mp4",
+        "name": "effi_test"
     }
 }

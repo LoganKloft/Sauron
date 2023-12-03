@@ -1,29 +1,186 @@
-# example of using video: https://github.com/zafarRehan/object_detection_COCO/blob/main/detection_code_video.py
-import cv2 as cv
+import cv2
+import json
+import sys
 
-cvNet = cv.dnn.readNetFromTensorflow("frozen_faster_rcnn.pb", "faster_rcnn.pbtxt")
+class_labels = [
+    "person",
+    "bicycle",
+    "car",
+    "motorcycle",
+    "airplane",
+    "bus",
+    "train",
+    "truck",
+    "boat",
+    "traffic light",
+    "fire hydrant",
+    "stop sign",
+    "parking meter",
+    "bench",
+    "bird",
+    "cat",
+    "dog",
+    "horse",
+    "sheep",
+    "cow",
+    "elephant",
+    "bear",
+    "zebra",
+    "giraffe",
+    "backpack",
+    "umbrella",
+    "handbag",
+    "tie",
+    "suitcase",
+    "frisbee",
+    "skis",
+    "snowboard",
+    "sports ball",
+    "kite",
+    "baseball bat",
+    "baseball glove",
+    "skateboard",
+    "surfboard",
+    "tennis racket",
+    "bottle",
+    "wine glass",
+    "cup",
+    "fork",
+    "knife",
+    "spoon",
+    "bowl",
+    "banana",
+    "apple",
+    "sandwich",
+    "orange",
+    "broccoli",
+    "carrot",
+    "hot dog",
+    "pizza",
+    "donut",
+    "cake",
+    "chair",
+    "couch",
+    "potted plant",
+    "bed",
+    "dining table",
+    "toilet",
+    "tv",
+    "laptop",
+    "mouse",
+    "remote",
+    "keyboard",
+    "cell phone",
+    "microwave",
+    "oven",
+    "toaster",
+    "sink",
+    "refrigerator",
+    "book",
+    "clock",
+    "vase",
+    "scissors",
+    "teddy bear",
+    "hair drier",
+    "toothbrush",
+]
 
-img = cv.imread("../image/elephant.jpg")
-rows = img.shape[0]
-cols = img.shape[1]
-cvNet.setInput(cv.dnn.blobFromImage(img, size=(600, 600), swapRB=True, crop=False))
-cvOut = cvNet.forward()
+# f = open("./src/python/config.json")
+f = open("./config.json")
+config = json.load(f)["faster_rcnn"]
+f.close()
 
-for detection in cvOut[0, 0, :, :]:
-    score = float(detection[2])
-    if score > 0.6:
-        left = detection[3] * cols
-        top = detection[4] * rows
-        right = detection[5] * cols
-        bottom = detection[6] * rows
-        print(left, top, right, bottom)
-        cv.rectangle(
-            img,
-            (int(left), int(top)),
-            (int(right), int(bottom)),
-            (23, 230, 210),
-            thickness=2,
-        )
+video = cv2.VideoCapture(config["source"])
+total_frames = video.get(cv2.CAP_PROP_FRAME_COUNT)
+frame_rate = video.get(cv2.CAP_PROP_FPS)
 
-cv.imshow("img", img)
-cv.waitKey()
+net = cv2.dnn_DetectionModel("frozen_faster_rcnn.pb", "faster_rcnn.pbtxt")
+net.setInputSize(600, 600)
+net.setInputSwapRB(True)
+net.setInputCrop(False)
+
+current_frame = 0
+stride = config["vid_stride"]
+output = dict()
+
+while current_frame < total_frames:
+    video.set(cv2.CAP_PROP_POS_FRAMES, current_frame)
+    ret, frame = video.read()
+
+    _classes, _confidences, _boxes = net.detect(
+        frame, confThreshold=config["conf"], nmsThreshold=0.4
+    )
+
+    if len(_classes) > 0:
+        for classId, confidence, box in zip(
+            _classes.flatten(), _confidences.flatten(), _boxes
+        ):
+            # print(class_labels[classId], confidence)
+            # cv2.rectangle(frame, box, color=(255, 0, 0), thickness=3)
+            # cv2.rectangle(
+            #     frame,
+            #     (box[0], box[1]),
+            #     (box[0] + box[2], box[1] + box[3]),
+            #     color=(255, 0, 0),
+            #     thickness=3,
+            # )
+            # print(box)
+
+            name = class_labels[classId]
+
+            # create entry if not already created
+            if name not in output:
+                output[name] = dict()
+                entry = output[name]
+                entry["frames"] = []
+                entry["counts"] = []
+                entry["boxes"] = []
+                entry["confidences"] = []
+                entry["timestamps"] = []
+
+            entry = output[name]
+            frames = entry["frames"]
+            index = 0
+            if current_frame not in frames:
+                index = len(frames)
+                frames.append(current_frame)
+            else:
+                index = frames.index(current_frame)
+
+            counts = entry["counts"]
+            if index == len(counts):
+                counts.append(1)
+            else:
+                counts[index] += 1
+
+            boxes = entry["boxes"]
+            if index == len(boxes):
+                boxes.append([])
+
+            boxes_entry = dict()
+            boxes_entry["x1"] = int(box[0])
+            boxes_entry["y1"] = int(box[1])
+            boxes_entry["x2"] = int(box[0] + box[2])
+            boxes_entry["y2"] = int(box[1] + box[3])
+            boxes[index].append(boxes_entry)
+
+            confidences = entry["confidences"]
+            if index == len(confidences):
+                confidences.append([])
+
+            confidences[index].append(float(confidence))
+
+            timestamps = entry["timestamps"]
+            if index == len(timestamps):
+                timestamps.append(current_frame / frame_rate)
+
+    print(f"{(current_frame / total_frames) * 100}%")
+    # cv2.imshow("out", frame)
+    # cv2.waitKey(1)
+    current_frame += stride
+
+video.release()
+task_name = config["name"]
+# with open(f"./src/data/query/{task_name}_results.json", "w") as fp:
+with open(f"./src/data/query/{task_name}_results.json", "w") as fp:
+    json.dump(output, fp)
