@@ -8,5 +8,11 @@
         "project": "../data/video",
         "name": "cars",
         "source": "../video/cars.mp4"
+    },
+    "efficientdet_d0": {
+        "conf": 0.7,
+        "vid_stride": 10,
+        "source": "../video/cars.mp4",
+        "name": "effi_test"
     }
 }
