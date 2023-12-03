@@ -10,7 +10,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
-import VideoJS from './video.jsx'
+import VideoJS from './video.jsx';
+import { getModelParams } from '../task_helper.js';
 
 const SECONDS_IN_HOUR = 60 * 60;
 const SECONDS_IN_MINUTE = 60;
@@ -125,7 +126,12 @@ function Query() {
     useEffect(() => {
         const result = []
         for (const value of checked) {
-            result.push(tasks[value]);
+            for (const task of tasks) {
+                if (value == task["key"]) {
+                    result.push(task);
+                    break;
+                }
+            }
         }
         setSelectedTasks(result);
     }, [checked])
@@ -211,7 +217,7 @@ function Query() {
                                         inputProps={{ 'aria-labelledby': labelId }}
                                     />
                                 </ListItemIcon>
-                                <ListItemText id={labelId} primary={`${task["model_params"]["yolo"]["name"]}`} />
+                                <ListItemText id={labelId} primary={`${getModelParams(task)["name"]}`} />
                             </ListItemButton>
                         </ListItem>
                     );
@@ -229,7 +235,7 @@ function Query() {
 
                     return (
                         <div key={metaItem["key"]}>
-                            <Typography>{task["model_params"]["yolo"]["name"]}</Typography>
+                            <Typography>{getModelParams(task)["name"]}</Typography>
                             {
                                 renderList &&
                                 renderList.map((item) => {

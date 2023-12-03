@@ -87,7 +87,7 @@ class_labels = [
 ]
 
 # f = open("./src/python/config.json")
-f = open("./config.json")
+f = open("./src/python/config.json")
 config = json.load(f)["efficientdet_d0"]
 f.close()
 
@@ -95,7 +95,9 @@ video = cv2.VideoCapture(config["source"])
 total_frames = video.get(cv2.CAP_PROP_FRAME_COUNT)
 frame_rate = video.get(cv2.CAP_PROP_FPS)
 
-net = cv2.dnn_DetectionModel("frozen_efficientdet_d0.pb", "efficientdet_d0.pbtxt")
+net = cv2.dnn_DetectionModel(
+    "./src/python/frozen_efficientdet_d0.pb", "./src/python/efficientdet_d0.pbtxt"
+)
 net.setInputSize(512, 512)
 net.setInputScale(1.0 / 255)
 net.setInputMean((123.675, 116.28, 103.53))
@@ -175,7 +177,8 @@ while current_frame < total_frames:
             if index == len(timestamps):
                 timestamps.append(current_frame / frame_rate)
 
-    print(f"{(current_frame / total_frames) * 100}%")
+    print(int((current_frame / total_frames) * 100))
+    sys.stdout.flush()
     # cv2.imshow("out", frame)
     # cv2.waitKey(1)
     current_frame += stride

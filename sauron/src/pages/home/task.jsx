@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
+import { getModelParams } from '../task_helper.js';
 
 function LinearProgressWithLabel(props) {
     return (
@@ -26,19 +27,19 @@ function Task({ task }) {
         window.electronAPI.processTask(task, task["key"]);
     }
 
-    window.electronAPI.handleProgress((event, value) => {
-        if (value === "start") {
+    window.electronAPI.handleProgress((event, value, id) => {
+        if (value === "start" && id === task["key"]) {
             setShowProgress(true);
-        } else if (value === "stop") {
+        } else if (value === "stop" && id === task["key"]) {
             setShowProgress(false);
-        } else {
+        } else if (id === task["key"]) {
             setProgress(Number(value));
         }
     })
 
     return (
         <div>
-            <Typography>{task["model_params"]["yolo"]["name"]}</Typography>
+            <Typography>{getModelParams(task)["name"]}</Typography>
             <Typography>{task["status"]}</Typography>
             <Typography>{task["create_date"]}</Typography>
             <Typography>{task["source_file_name"]}</Typography>

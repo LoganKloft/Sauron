@@ -33,6 +33,14 @@ export function init() {
     }
 }
 
+export function getModelName(task) {
+    return task["models"][0];
+}
+
+export function getModelParams(task) {
+    return task["model_params"][getModelName(task)];
+}
+
 async function setTaskStatus(id, status) {
     const tasks = JSON.parse(await readFile("./src/data/task/tasks.json"));
 
@@ -41,20 +49,24 @@ async function setTaskStatus(id, status) {
     await writeFile("./src/data/task/tasks.json", JSON.stringify(tasks));
 }
 
+// pass in a task which contains all necessary information
+// id allows us to access the task in tasks.json
+// model tells us which model to run, we don't process
+// all at once
 export async function processTask(event, task, id) {
     // write model parameters to ./src/python/config.json
     const config = {};
-    config["yolo"] = task["model_params"]["yolo"];
+    config[getModelName(task)] = getModelParams(task);
     await writeFile("./src/python/config.json", JSON.stringify(config));
 
     // create python process for model
-    const pythonProcess = spawn('python', ['./src/python/yolo.py'])
+    const pythonProcess = spawn('python', [`./src/python/${getModelName(task)}.py`])
 
-    handleProgress("start");
+    handleProgress("start", id);
 
     pythonProcess.stdout.on('data', (data) => {
         console.log(data.toString());
-        handleProgress(data.toString());
+        handleProgress(data.toString(), id);
     })
 
     pythonProcess.on('error', (err) => {
@@ -64,7 +76,7 @@ export async function processTask(event, task, id) {
 
     pythonProcess.on('close', (code) => {
         console.log(`Python script exited with code ${code}`);
-        handleProgress("stop");
+        handleProgress("stop", id);
     })
 
     await setTaskStatus(id, "processed");

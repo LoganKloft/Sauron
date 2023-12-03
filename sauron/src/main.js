@@ -44,8 +44,8 @@ const createWindow = () => {
   _mainWindow = mainWindow;
 };
 
-export function handleProgress(value) {
-  _mainWindow.webContents.send("handleProgress", value);
+export function handleProgress(value, id) {
+  _mainWindow.webContents.send("handleProgress", value, id);
 }
 
 // This method will be called when Electron has finished
