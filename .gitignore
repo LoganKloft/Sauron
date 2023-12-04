@@ -143,3 +143,4 @@ dist
 /sauron/src/python/config.json
 /sauron/src/data/video/*
 /sauron/src/python/frozen_faster_rcnn.pb
+/sauron/src/data/evaluation/Images
