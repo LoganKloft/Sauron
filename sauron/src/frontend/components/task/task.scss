@@ -1,0 +1,123 @@
+.taskContainer {
+    width: calc(100% - 30px);
+    padding: 20px;
+    border-radius: 5px;
+    background-color: rgb(32, 31, 30);
+
+    .controls {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        .titleContainer {
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
+            align-items: center;
+            .title {
+                display:block;
+                max-width: 30vw;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                color: rgb(255,236,214);
+                font-family: 'Roboto', sans-serif;
+                font-size: 18px;
+                margin-right: 10px;
+            }   
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .ProgressBar {
+            margin: 0px 0px 0px 40px;
+            flex:1;
+            height: 20px;
+
+            --background: black;
+            --foreground: rgb(209, 154, 65);
+        }
+
+       
+        .proccessButton {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            padding: 5px 10px 5px 10px;
+            margin-left: 20px;
+
+            border: none;
+            outline: none;
+            border-radius: 5px;
+
+            &.disabled {
+                cursor: default;
+                color: rgb(209, 154, 65);
+                background-color: rgb(53, 50, 48);
+            }
+
+            &:not(.disabled) {
+                color: rgb(255,236,214);
+                transition: 0.2s;
+                background-color: rgb(53, 50, 48);
+
+                &:hover {
+                    cursor:pointer;
+                    background-color: rgb(209, 154, 65);
+                }      
+            }
+        }
+    }
+   
+   
+
+    .collapsed {
+        transition: 0.5s;
+        height: 0px;
+    }
+
+    .notCollapsed {
+        font-family: 'Roboto', sans-serif;
+        font-size: 16px;
+        color: rgb(255,236,214);
+
+        transition: 0.5s;
+        margin-top:15px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+
+        .title {
+            color: rgb(209, 154, 65);
+            margin-right: 20px;
+        }
+
+        hr {
+            width: 100%;
+            
+        }
+
+        .section {
+            width: 100%;
+            margin-top: 15px;
+            display: flex; 
+            flex-direction: row;
+            justify-content: space-between;
+
+            .fileContainer {
+                margin-right: 15px;               
+            }
+
+            .locationContainer {
+                display:inline-block;
+                white-space: nowrap;
+                width: 100%;
+                overflow-x: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+}

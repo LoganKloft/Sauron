@@ -1,0 +1,84 @@
+#toolbar {
+    background-color: rgb(7, 6, 5);
+    width: 100%;
+    height: inherit;
+  
+    #drag-region {
+        display:flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        width: 100%;
+        height: 100%;
+        -webkit-app-region: drag;
+
+        .left-container {
+            display:flex;
+            flex-direction: row;
+            
+            .logo {
+                pointer-events: none;
+                user-select: none;
+                margin: 13px 20px 13px 20px;
+                height: 24px;
+                width: auto;
+            }
+
+            .tab {
+                -webkit-app-region: no-drag;
+                
+                color: rgb(255,236,214);
+               
+                height: 50px;
+                width: 80px;
+                transition: 0.2s;
+                
+                display:flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+
+                &.selected {
+                    background-color: rgb(32, 31, 30);
+                }
+
+                &:not(.selected):hover {
+                    background-color: rgb(53, 50, 48);
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .right-container {
+            -webkit-app-region: no-drag;
+            display:flex;
+            flex-direction: row;
+
+            .control {
+                height: 50px;
+                width: auto;
+                transition: 0.2s;
+
+                img {
+                    pointer-events: none;
+                    user-select: none;
+                    margin: 19px;
+                    height: 12px;
+                    width: auto;
+                }   
+
+                &:hover {
+                    cursor: pointer;
+
+                    &.light {
+                        background-color: rgb(209, 154, 65);
+                    }
+
+                    &.red {
+                        background-color: rgb(181, 21, 21);
+                    }
+                }
+            }
+        }   
+    }
+}

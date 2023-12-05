@@ -1,0 +1,18 @@
+.ProgressBar {
+    position:relative;
+    border-radius: 5px;
+    overflow: hidden;
+    
+    .outer {
+        height: 100%;
+        width: 100%;
+        position:absolute;
+        background-color: var(--background, black);
+    }
+
+    .inner {
+        height: 100%;
+        position:absolute;
+        background-color: var(--foreground, white);
+    }
+}
