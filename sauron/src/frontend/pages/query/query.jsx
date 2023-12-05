@@ -1,45 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import { Box, Typography } from '@mui/material';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
 import VideoJS from '../../components/video/video.jsx';
 import { getModelParams } from '../../task_helper.js';
-
-
 
 import RightArrowImg from '../../../assets/app/dropdown_right.png'
 import LeftArrowImg from '../../../assets/app/dropdown_left.png'
 
-
 import './query.scss'
 
-const SECONDS_IN_HOUR = 60 * 60;
-const SECONDS_IN_MINUTE = 60;
-function formatSeconds(seconds) {
-    // hours - a whole number
-    let hours = Math.trunc(seconds / SECONDS_IN_HOUR);
-    hours = hours.toString();
-    seconds = seconds - (hours * SECONDS_IN_HOUR);
-
-    // minutes - a whole number
-    let minutes = Math.trunc(seconds / SECONDS_IN_MINUTE);
-    minutes = minutes.toString();
-
-    // seconds - most likely a decimal value
-    seconds = seconds - (minutes * SECONDS_IN_MINUTE);
-    seconds = seconds.toString();
-
-    return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
-}
-
 function Query() {
+    const [showTaskList, setShowTaskList] = useState(true);
+    const [showLabelList, setShowLabelList] = useState(true);
     const [tasks, setTasks] = useState([])
     const [currentTask, setCurrentTask] = useState({})
     const [selectedLabels, setSelectedLabels] = useState([]);
@@ -48,9 +18,11 @@ function Query() {
     const [queryMetaItems, setQueryMetaItems] = useState([]);
     const [queryData, setQueryData] = useState([]);
     const [source, setSource] = useState(null);
-
     const playerRef = useRef(null);
 
+    /**
+     * Sets the options for initializing the video player
+     */
     const videoJsOptions = {
         autoplay: false,
         controls: true,
@@ -66,26 +38,25 @@ function Query() {
         }]
     };
 
+    /**
+     * Setups up the player reference to be access in this file.
+     * @param {Player} player 
+     */
     const handlePlayerReady = (player) => {
         playerRef.current = player;
-
-        // You can handle player events here, for example:
-        player.on('waiting', () => {
-            console.log('player is waiting');
-        });
-
-        player.on('dispose', () => {
-            console.log('player will dispose');
-        });
     };
 
+    /**
+     * All the available labels
+     */
     const labels = ["person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush']
 
-    // get all processed tasks from tasks.json
-    // add each task's index as field "key"
     useEffect(() => {
         (async function () {
+            // Gets the task list from electron
             const result = await window.electronAPI.getTasks();
+
+            // Store all the entries from tasks that are processed except for the one labeled "count"
             const temp = [];
             for (const key in result) {
                 if (key !== "count") {
@@ -97,7 +68,7 @@ function Query() {
                 }
             }
 
-            // newest task displayed first
+            // sort the task to display the newest first
             temp.sort((a, b) => {
                 return new Date(a.create_date) < new Date(b.create_date) ? 1 : -1;
             });
@@ -106,6 +77,11 @@ function Query() {
         })();
     }, [])
 
+    /**
+     * Gets the task by key name
+     * @param {string} key 
+     * @returns {any} task
+     */
     function getTask(key) {
         for (const task of tasks) {
             if (task["key"] == key) {
@@ -114,7 +90,11 @@ function Query() {
         }
     }
 
-    const handleToggleTask = (value) => () => {
+    /**
+     * Toggles the task on the task list
+     * @param {string} value 
+     */
+    const handleToggleTask = (value) => {
         const currentIndex = checked.indexOf(value);
         const newChecked = [...checked];
 
@@ -128,7 +108,11 @@ function Query() {
         setSource('');
     };
 
-    const handleToggleLabel = (value) => () => {
+    /**
+     * Toggles the label on the label list
+     * @param {string} value 
+     */
+    const handleToggleLabel = (value) => {
         const currentIndex = selectedLabels.indexOf(value);
         const newLabels = [...selectedLabels];
 
@@ -141,7 +125,9 @@ function Query() {
         setSelectedLabels(newLabels);
     };
 
-
+    /**
+     * Update the selected tasks whenever a task is selected or unselected
+     */ 
     useEffect(() => {
         const result = []
         for (const value of checked) {
@@ -155,16 +141,13 @@ function Query() {
         setSelectedTasks(result);
     }, [checked])
 
+    /**
+     * Gets the query data anytime the selected labels or selected tasks change
+     */ 
     useEffect(() => {
         setQueryMetaItems([]);
         setQueryData([]);
-        // send list of tasks and list of labels. tasks must have 'key' on them
-        // in return receive list of objects in the 
-        // following format:
-        // [
-        // {key: 0, label1: 5, label2: 10, label3: 0}
-        // ]
-        // the key (id) for the task and a count for each label
+
         if (selectedLabels.length > 0 && selectedTasks.length > 0) {
             (async function () {
                 const result = await window.electronAPI.getQueryMeta(selectedLabels, selectedTasks);
@@ -173,9 +156,11 @@ function Query() {
         }
     }, [selectedLabels, selectedTasks])
 
-    // want to display the video
-    // want to get the frames for hyperlinking
-    // each frame has a label associated with it
+    /**
+     * Sets up the video player and the query data to correctly display options
+     * @param {any} task 
+     */
+
     function handleViewClick(task) {
         (async function () {
             const result = await window.electronAPI.getQueryData(selectedLabels, task);
@@ -186,16 +171,21 @@ function Query() {
         })();
     }
 
-    // TODO: feed in time stamp
-    // HOW: in yolo.py use total_frames and frame to calculate timestamp
-    // then change getQueryData to return timestamps rather than frames
-    // then change the mapping of queryDataItems to use timestamps
-    // then change this function to take the timestamp as input and seek to that time
+    /**
+     * Used to set the video to a specific time
+     * @param {string | number} timestamp 
+     */
     function handleSeek(timestamp) {
+        /** @type {Player} */
+        const player = playerRef.current;
+
         playerRef.current.currentTime(timestamp);
         playerRef.current.pause();
     }
 
+    /**
+     * Using the task and query data, create a list of timestamps for each query label
+     */
     function getTimestamps()  {        
         const params = getModelParams(currentTask);
         const stride = params.vid_stride;
@@ -208,14 +198,12 @@ function Query() {
                 let lastframe = null, currentGroup = null;
                 for (let i = 0; i < data.frames.length; i++) {
                     const frame =  data.frames[i];
-
                     if (lastframe === frame - stride) {
                         currentGroup.push(i);
                     } else {
                         if (currentGroup) groups.push(currentGroup);
                         currentGroup = [i];
                     }
-
                     lastframe = frame;
                 }
                 groups.push(currentGroup);
@@ -244,9 +232,6 @@ function Query() {
         })
     }
 
-    const [showTaskList, setShowTaskList] = useState(true);
-    const [showLabelList, setShowLabelList] = useState(true);
-
     return (
         <div className='queryContainer'>
             { showTaskList 
@@ -262,7 +247,7 @@ function Query() {
                         {tasks.map((task) => {
                             return (
                             <label key={task['key']} className='task'>
-                                <input type="checkbox" checked={checked.indexOf(task["key"]) !== -1} onChange={handleToggleTask(task["key"])} />
+                                <input type="checkbox" checked={checked.indexOf(task["key"]) !== -1} onChange={() => handleToggleTask(task["key"])} />
                                 <span>{getModelParams(task)["name"]}</span>
                             </label>
                             )
@@ -357,7 +342,7 @@ function Query() {
                         {labels.map((label) => {
                             return (
                             <label key={label} className='label'>
-                                <input type="checkbox" checked={selectedLabels.indexOf(label) !== -1} onChange={handleToggleLabel(label)} />
+                                <input type="checkbox" checked={selectedLabels.indexOf(label) !== -1} onChange={() => handleToggleLabel(label)} />
                                 <span>{label}</span>
                             </label>
                             )

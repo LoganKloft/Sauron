@@ -1,13 +1,26 @@
 import { _mainWindow } from "./main";
 
+/**
+ * Gets the dev tools opened state
+ * @returns {boolean}
+ */
 export const isDevToolsOpened = () => {
     return _mainWindow.webContents.isDevToolsOpened();
 }
   
+/**
+ * Gets window's maximized state
+ * @returns {boolean}
+ */
 export const isMaximized = () => {
     return _mainWindow.isMaximized();
 }
 
+/**
+ * Toggles the dev tools opened state, returns true if
+ * the dev tools are being opened, or false otherwise.
+ * @returns {boolean}
+ */
 export const toggleDevTools = () => {
     if (_mainWindow.webContents.isDevToolsOpened()) {
         _mainWindow.webContents.closeDevTools();
@@ -18,6 +31,11 @@ export const toggleDevTools = () => {
     }
 }
 
+/**
+ * Toggles the window's maximized state, returns true if
+ * the window is being maximized, or false otherwise.
+ * @returns {boolean}
+ */
 export const toggleMaximized = () => {
     if (_mainWindow.isMaximized()) {
         _mainWindow.unmaximize()
@@ -28,10 +46,16 @@ export const toggleMaximized = () => {
     }
 }
 
+/**
+ * Closes the window
+ */
 export const close = () => {
     _mainWindow.close();
 }
 
+/**
+ * Minimizes the window
+ */
 export const minimize = () => {
     _mainWindow.minimize();
 }

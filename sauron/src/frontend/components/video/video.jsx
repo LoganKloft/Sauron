@@ -4,6 +4,9 @@ import 'video.js/dist/video-js.css';
 
 import './video.scss'
 
+/**
+ * Used to hold on to references.
+ */
 let animationId, resizeObserver;
 
 export const VideoJS = (props) => {
@@ -26,11 +29,8 @@ export const VideoJS = (props) => {
                 onReady && onReady(player);
             });
 
-            // You could update an existing player in the `else` block here
-            // on prop change, for example:
         } else {
             const player = playerRef.current;
-
             player.autoplay(options.autoplay);
             player.src(options.sources);
         }
@@ -44,6 +44,9 @@ export const VideoJS = (props) => {
         };
     }, [options, videoRef]);
 
+    /**
+     * This function draws the boxes
+     */
     const animate = () => {
         const time = playerRef.current.currentTime();
         const videoWidth = playerRef.current.videoWidth();
@@ -69,38 +72,33 @@ export const VideoJS = (props) => {
             const item = queryDataItem[label]
             const timestamps = item.timestamps;
 
+            // Get closest timestamp according to current time
             let closestIndex = -1, closestValue = null;
             for (let i = 0; i < timestamps.length; i++) {
                 const distance = Math.abs(time - timestamps[i]);
-
                 if (!closestValue || distance < closestValue) {
                     closestValue = distance;
                     closestIndex = i;
                 }
             }
 
+            // If the timestamp is within a second, draw the bounding box and text.
             if (closestValue < 1) {
-
                 const frames = item.boxes[closestIndex]
-
                 for (const frame of frames) {
-
                     ctx.strokeText(label, frame.x1 + 1, frame.y1 + 7);
                     ctx.strokeRect(frame.x1, frame.y1, frame.x2 - frame.x1, frame.y2 - frame.y1);
                 }
             }
         })
 
-        
-
-
-
+        // Get the next animation frame
         animationId = window.requestAnimationFrame(animate);
     }
 
     useEffect(() => {
+        // Setup a resize observer so the canvas can always be the size of its sibling div.
         const overlay = document.getElementById('overlay');
-
         animationId = window.requestAnimationFrame(animate);
         resizeObserver = new ResizeObserver((entries) => {
             entries.forEach((entry) => {
@@ -111,6 +109,7 @@ export const VideoJS = (props) => {
 
         resizeObserver.observe(playerRef.current.contentEl());        
         return () => {
+            // Stops the animation loop
             window.cancelAnimationFrame(animationId);
             resizeObserver.disconnect();
         }

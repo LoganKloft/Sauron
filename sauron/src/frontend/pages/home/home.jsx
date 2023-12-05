@@ -9,7 +9,10 @@ function Home({ setTab }) {
 
     useEffect(() => {
         (async function () {
+            // Gets the task list from electron
             const result = await window.electronAPI.getTasks();
+
+            // Store all the entries from tasks except for the one labeled "count"
             const temp = [];
             for (const key in result) {
                 if (key !== "count") {
@@ -18,7 +21,7 @@ function Home({ setTab }) {
                 }
             }
 
-            // newest task displayed first
+            // sort the task to display the newest first
             temp.sort((a, b) => {
                 return new Date(a.create_date) < new Date(b.create_date) ? 1 : -1;
             });

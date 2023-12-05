@@ -19,6 +19,12 @@ export function Task({ task }) {
         window.electronAPI.processTask(task, task["key"]);
     }
 
+    /**
+     * Updates the progress state
+     * @param {any} _ 
+     * @param {string} value 
+     * @param {number} id 
+     */
     const handleProgress = (_, value, id) => {
         if (value === "start" && id === task["key"]) {
             setProcessing(true);

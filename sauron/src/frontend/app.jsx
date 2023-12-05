@@ -8,18 +8,19 @@ import Query from './pages/query/query.jsx'
 import "./app.scss"
 
 const App = () => {
-    const [tab, setTab] = React.useState("home");
-  
-    return (
-      <div className="app">
-        <Toolbar tab={tab} setTab={setTab}/>
-        <div id="content">
-          {tab == 'home' && <Home setTab={setTab}/>}
-          {tab == 'upload' && <Upload setTab={setTab}/>}
-          {tab == 'query' && <Query setTab={setTab}/>}
-        </div>
+  // Determines the open tab on the application.
+  const [tab, setTab] = React.useState("home");
+
+  return (
+    <div className="app">
+      <Toolbar tab={tab} setTab={setTab}/>
+      <div id="content">
+        {tab == 'home' && <Home setTab={setTab}/>}
+        {tab == 'upload' && <Upload setTab={setTab}/>}
+        {tab == 'query' && <Query setTab={setTab}/>}
       </div>
-    );
-  }
-  
-  export default App;
+    </div>
+  );
+}
+
+export default App;

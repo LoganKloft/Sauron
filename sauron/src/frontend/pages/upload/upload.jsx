@@ -20,9 +20,11 @@ function Upload({ setTab }) {
     const [model, setModel] = useState(0);
     const [sourceFileLocation, setSourceFileLocation] = useState('');
     const [sourceFileName, setSourceFileName] = useState('');
-
     const modelParametersRef = useRef({ "yolo": {}, "mobilenetssd": {}, "faster_rcnn": {}, "efficientdet_d0": {} });
 
+    /**
+     * Gets a file
+     */
     async function handleFileUpload() {
         const { fpath, fname } = await window.electronAPI.openFile();
         if (fpath && fname) {
@@ -35,11 +37,18 @@ function Upload({ setTab }) {
         }
     }
 
+    /**
+     * Removes the current file
+     */
     function removeFileUpload() {
         setSourceFileLocation('');
         setSourceFileName('');
     }
 
+    /**
+     * Update handler for name change
+     * @param {any} event 
+     */
     function handleNameChange(event) {
         modelParametersRef.current["yolo"]["name"] = event.target.value;
         modelParametersRef.current["mobilenetssd"]["name"] = event.target.value;
@@ -48,10 +57,17 @@ function Upload({ setTab }) {
         setName(event.target.value);
     }
 
+    /**
+     * Selected the model
+     * @param {any} event 
+     */
     function selectModel(event) {
         setModel(Number(event.target.value));
     }
 
+    /**
+     * Creates the task using the options specificed, then sends it to electron for processing
+     */
     async function handleCreateTask() {
         let models = []
 

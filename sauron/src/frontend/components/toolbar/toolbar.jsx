@@ -27,6 +27,7 @@ export default ({tab, setTab}) => {
         window.electronListeners["window:close_dev_tools"].on("toolbar", () => { setShowingDevTools(false) })
 
         return () => {
+            // Remove listeners
             window.electronListeners["window:maximize"].remove("toolbar");
             window.electronListeners["window:unmaximize"].remove("toolbar");
             window.electronListeners["window:open_dev_tools"].remove("toolbar");

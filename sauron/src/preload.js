@@ -2,6 +2,49 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 const { contextBridge, ipcRenderer } = require('electron');
 
+
+/**
+ * Used to setup event listeners in the frontend.
+ * @class Listener
+ */
+class Listener {
+    /**
+     * Registers the listener
+     * @param {string} id 
+     * @param {() => void} callback 
+     */
+    on = (id, callback) => {
+        this.current[id] = callback;
+    }
+
+    /**
+     * Removes the listener
+     * @param {string} id 
+     */
+    remove = (id) => {
+        delete this.current[id];
+    }
+
+    /**
+     * Calls the listeners' callbacks
+     */
+    activate = () => {
+        for (const id in this.current) {
+            this.current[id]();
+        }
+    }
+
+    /**
+     * Holds the listeners callbacks
+     * @type {{[key: string]: () => {}}}
+     */
+    current = {}
+}
+
+
+/**
+ * Exposes certain functions and listeners to the front end
+ */
 contextBridge.exposeInMainWorld('electronAPI', {
     saveTask: (task) => ipcRenderer.invoke('saveTask', task),
     openFile: () => ipcRenderer.invoke('dialog:openFile'),
@@ -20,28 +63,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     isDevToolsOpened: () => ipcRenderer.invoke('app:is_dev_tools_opened'),
 })
 
-
-
-
-class Listener {
-    on = (id, callback) => {
-        this.current[id] = callback;
-    }
-
-    remove = (id) => {
-        delete this.current[id];
-    }
-
-    activate = () => {
-        for (const id in this.current) {
-            this.current[id]();
-        }
-    }
-
-    current = {}
-}
-
-// Next we register all the listeners
+/**
+ * A list of all the registerable listeners
+ */
 const listeners = {
     "window:maximize": new Listener(),
     "window:unmaximize": new Listener(),
@@ -49,12 +73,16 @@ const listeners = {
     "window:close_dev_tools": new Listener(),
 };
 
+/**
+ * Register the listeners
+ */
 for (const channel in listeners) {
   ipcRenderer.on(channel, () => {
     listeners[channel].activate();
   });
 }
-// And expose them in the front end
-contextBridge.exposeInMainWorld('electronListeners', listeners);
 
-  
+/**
+ * Expose the listeners in the frontend.
+ */
+contextBridge.exposeInMainWorld('electronListeners', listeners);
