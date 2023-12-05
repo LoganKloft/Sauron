@@ -1,3 +1,8 @@
+# IOU formula https://www.v7labs.com/blog/intersection-over-union-guide
+# to use replace the three xxx_inference_70.txt files
+# then 'python calculate_iou.py'
+# cwd must be at this level
+
 import json
 # read in gound truths
 f = open("annotations.txt")
