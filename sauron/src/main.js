@@ -4,7 +4,10 @@ import { saveTask, getTasks, processTask, init as initTasks } from './tasks.js';
 import { resolveURL, getQueryMeta, getQueryData, init as initMeta } from './query.js';
 import { startExpressServer, stopExpressServer } from './express.js';
 
-let _mainWindow = null;
+import Icon from "./assets/icons/icons8-ring-512.png"
+import { minimize, toggleMaximized, close, isDevToolsOpened, isMaximized, toggleDevTools } from './api.js';
+
+export var _mainWindow = null;
 
 async function handleFileOpen() {
   const { canceled, filePaths } = await dialog.showOpenDialog({
@@ -27,7 +30,12 @@ const createWindow = () => {
 
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
+    frame: false,
+    useContentSize: true,
+    icon:  path.join(__dirname, Icon),
+    minWidth: 960,
+    minHeight: 600,
+    width: 960,
     height: 600,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
@@ -37,6 +45,7 @@ const createWindow = () => {
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  mainWindow.removeMenu();
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
@@ -60,6 +69,8 @@ app.on('ready', () => {
   initTasks();
 
   createWindow();
+
+  // Setup IPC
   ipcMain.handle('dialog:openFile', handleFileOpen);
   ipcMain.handle('saveTask', saveTask);
   ipcMain.handle('getTasks', getTasks);
@@ -67,6 +78,30 @@ app.on('ready', () => {
   ipcMain.handle('getQueryMeta', getQueryMeta);
   ipcMain.handle('getQueryData', getQueryData);
   ipcMain.handle('resolveURL', resolveURL);
+
+  // Used for application control
+  ipcMain.handle('app:minimize', minimize);
+  ipcMain.handle('app:close', close);
+  ipcMain.handle('app:is_maximized', isMaximized);
+  ipcMain.handle('app:is_dev_tools_opened', isDevToolsOpened);
+  ipcMain.handle('app:toggle_maximized', toggleMaximized);
+  ipcMain.handle('app:toggle_dev_tools', toggleDevTools);
+
+  _mainWindow.on("maximize", () => {
+    _mainWindow.webContents.send("window:maximize");
+  });
+
+  _mainWindow.on("unmaximize", () => {
+    _mainWindow.webContents.send("window:unmaximize");
+  });
+
+  _mainWindow.webContents.on("devtools-opened", () => {
+    _mainWindow.webContents.send("window:open_dev_tools");
+  });
+
+  _mainWindow.webContents.on("devtools-closed", () => {
+    _mainWindow.webContents.send("window:close_dev_tools");
+  });
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     callback({
