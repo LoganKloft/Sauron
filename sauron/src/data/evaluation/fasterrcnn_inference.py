@@ -51,10 +51,8 @@ for image_name in image_names:
                 out["boxes"].append([int(box[0]), int(box[1]), int(box[2]), int(box[3])])
 
     outs.append(out)
+    f.write(json.dumps(out) + "\n")
     print(f"Progress: {(current_iter / 4370) * 100}%")
     current_iter += 1
-
-for out in outs:
-    f.write(json.dumps(out) + "\n")
 
 f.close()
