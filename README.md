@@ -24,6 +24,24 @@ Install dependencies
   npm install
 ```
 
+Go to the python directory
+
+```bash
+  cd src/python
+```
+
+Install dependencies
+
+```bash
+  pip install -r requirements.txt
+```
+
+Go back to the project directory
+
+```bash
+cd ../..
+```
+
 Start the server
 
 ```bash
