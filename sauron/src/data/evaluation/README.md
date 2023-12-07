@@ -3,6 +3,12 @@
 Download the evaluation images from [CrowdHuman](https://drive.google.com/file/d/18jFI789CoHTppQ7vmRSFEdnGaSQZ4YzO/view)
 
 Extract the Images folder into the evaluations folder
+
+run script to convert annotation
+
+```bash
+    python format_annotation_val.py
+```
  
 run each inference script (~2-3 hours total)
 
@@ -11,12 +17,6 @@ run each inference script (~2-3 hours total)
     python mobilenetssd_inference.py
     python yolo_inference.py
     python fasterrcnn_inference.py
-```
-
-run script to convert annotation
-
-```bash
-    python format_annotation_val.py
 ```
 
 run calculate_iou script for each model
