@@ -61,10 +61,11 @@ Start the server
 - [@destructioneering](https://github.com/destructioneering)
 - [@jeremiah9020](https://github.com/jeremiah9020)
 
-## Collab Resources
+## Colab Resources
 
-- [Evaluation Collab](https://colab.research.google.com/drive/1rRutPPlbRErqldoFEulO2-7AOzSpq-Sz#scrollTo=mvIKeR_hDsfS)
-- [Sauron Setup + Demonstration Collab](https://colab.research.google.com/drive/1Kt0UP4yzwde8QoaJDoojH1KJUeuwa87C#scrollTo=a1MDEZvCHhpe)
+- [Evaluation Colab](https://colab.research.google.com/drive/1rRutPPlbRErqldoFEulO2-7AOzSpq-Sz#scrollTo=mvIKeR_hDsfS)
+- [Sauron Setup + Demonstration Colab](https://colab.research.google.com/drive/1Kt0UP4yzwde8QoaJDoojH1KJUeuwa87C#scrollTo=a1MDEZvCHhpe)
 - [Presentation Slides](https://docs.google.com/presentation/d/14QxLX-CIKX8acvAwU6JBma2ym4PzdAtkcSdqhYwfhLE/edit#slide=id.g2a33ae7451d_0_10)
 - [Written Report](https://docs.google.com/document/d/1W0cJ2Gu5Oxt5V1Ky534hDePS0ecDq_8XQd4wN35R1RE/edit?usp=drive_link)
 - [Video demonstration](https://drive.google.com/file/d/15yfF_ZCs7ZFZP3pbg3GXBXSt8gDnJxiV/view?usp=drive_link)
+- [Custom Training Script](https://drive.google.com/file/d/1xwQ5H7FAB3wugdjbzFlcPl_en-Wkbftc/view?usp=drive_link)
