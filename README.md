@@ -42,6 +42,12 @@ Go back to the project directory
 cd ../..
 ```
 
+Install Faster RCNN ResNet50
+[download and unzip](http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet50_coco_2018_01_28.tar.gz) from [here](https://github.com/opencv/opencv/wiki/TensorFlow-Object-Detection-API)
+
+rename 'frozen_inference_graph.pb' to 'frozen_faster_rcnn.pb' and paste into Sauron/sauron/src/python directory
+
+
 Start the server
 
 ```bash
